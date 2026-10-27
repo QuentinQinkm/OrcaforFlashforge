@@ -674,6 +674,9 @@ void FlashforgePrintHostSendDialog::init()
     if (!timelapse.empty())
         m_time_lapse_video = timelapse == "1";
 
+    m_flow_calibration       = app_config->get("recent", CONFIG_KEY_FLOW_CALI) == "1";
+    m_first_layer_inspection = app_config->get("recent", CONFIG_KEY_FIRST_LAYER_INSPECTION) == "1";
+
     // Flashforge local printing should default to IFS enabled when supported.
     // We don't revive an old stale "0" here.
     m_use_material_station = m_supports_material_station;
@@ -748,6 +751,10 @@ void FlashforgePrintHostSendDialog::init()
                         [this](bool checked) { m_leveling_before_print = checked; }, &m_checkbox_leveling);
     add_option_checkbox(m_flashforge_options_sizer, _L("Time-lapse"), m_time_lapse_video,
                         [this](bool checked) { m_time_lapse_video = checked; }, &m_checkbox_timelapse);
+    add_option_checkbox(m_flashforge_options_sizer, _L("Flow calibration"), m_flow_calibration,
+                        [this](bool checked) { m_flow_calibration = checked; }, &m_checkbox_flow_calibration);
+    add_option_checkbox(m_flashforge_options_sizer, _L("First layer inspection"), m_first_layer_inspection,
+                        [this](bool checked) { m_first_layer_inspection = checked; }, &m_checkbox_first_layer_inspection);
     add_option_checkbox(m_flashforge_options_sizer, _L("Enable IFS"), m_use_material_station,
                         [this](bool checked) {
                             m_use_material_station = checked;
@@ -836,6 +843,8 @@ void FlashforgePrintHostSendDialog::EndModal(int ret)
         AppConfig* app_config = wxGetApp().app_config;
         app_config->set("recent", CONFIG_KEY_LEVELING, m_leveling_before_print ? "1" : "0");
         app_config->set("recent", CONFIG_KEY_TIMELAPSE, m_time_lapse_video ? "1" : "0");
+        app_config->set("recent", CONFIG_KEY_FLOW_CALI, m_flow_calibration ? "1" : "0");
+        app_config->set("recent", CONFIG_KEY_FIRST_LAYER_INSPECTION, m_first_layer_inspection ? "1" : "0");
         app_config->set("recent", CONFIG_KEY_IFS, m_use_material_station ? "1" : "0");
     }
 
@@ -876,6 +885,8 @@ std::map<std::string, std::string> FlashforgePrintHostSendDialog::extendedInfo()
     return {
         {"levelingBeforePrint", m_leveling_before_print ? "1" : "0"},
         {"timeLapseVideo", m_time_lapse_video ? "1" : "0"},
+        {"flowCalibration", m_flow_calibration ? "1" : "0"},
+        {"firstLayerInspection", m_first_layer_inspection ? "1" : "0"},
         {"useMatlStation", m_use_material_station ? "1" : "0"},
         {"gcodeToolCnt", std::to_string(mapped_count)},
         {"materialMappings", mappings.dump()}
