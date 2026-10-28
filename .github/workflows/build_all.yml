@@ -69,7 +69,7 @@ jobs:
           - arch: "aarch64"
             os: ubuntu-24.04-arm
     # Don't run scheduled builds on forks:
-    if: ${{ !cancelled() && (github.event_name != 'schedule' || github.repository == 'OrcaSlicer/OrcaSlicer') }}
+    if: ${{ !cancelled() && github.repository == 'OrcaSlicer/OrcaSlicer' && (github.event_name != 'schedule' || github.repository == 'OrcaSlicer/OrcaSlicer') }}
     uses: ./.github/workflows/build_check_cache.yml
     with:
       os: ${{ matrix.os }}
@@ -87,7 +87,7 @@ jobs:
           - arch: arm64
             os: windows-11-arm
     # Don't run scheduled builds on forks:
-    if: ${{ !cancelled() && (github.event_name != 'schedule' || github.repository == 'OrcaSlicer/OrcaSlicer') }}
+    if: ${{ !cancelled() && github.repository == 'OrcaSlicer/OrcaSlicer' && (github.event_name != 'schedule' || github.repository == 'OrcaSlicer/OrcaSlicer') }}
     uses: ./.github/workflows/build_check_cache.yml
     with:
       # Self-hosted runner is x64-only; ARM64 always uses the GitHub-hosted runner.
@@ -190,7 +190,7 @@ jobs:
           - arch: aarch64
             runner: ubuntu-24.04-arm
     # Don't run scheduled builds on forks; skip entirely on self-hosted runners
-    if: ${{ !cancelled() && !vars.SELF_HOSTED && (github.event_name != 'schedule' || github.repository == 'OrcaSlicer/OrcaSlicer') }}
+    if: ${{ !cancelled() && github.repository == 'OrcaSlicer/OrcaSlicer' && !vars.SELF_HOSTED && (github.event_name != 'schedule' || github.repository == 'OrcaSlicer/OrcaSlicer') }}
 
     runs-on: ${{ matrix.variant.runner }}
     env:
